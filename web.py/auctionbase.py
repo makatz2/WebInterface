@@ -77,6 +77,7 @@ class select_time:
     # and GET requests
     def POST(self):
         post_params = web.input()
+        curr = sqlitedb.getTime()
         MM = post_params['MM']
         dd = post_params['dd']
         yyyy = post_params['yyyy']
@@ -87,7 +88,9 @@ class select_time:
 
 
         selected_time = '%s-%s-%s %s:%s:%s' % (yyyy, MM, dd, HH, mm, ss)
-        update_message = '(Hello, %s. Previously selected time was: %s.)' % (enter_name, selected_time)
+        if(curr > selected_time):
+        	update_message = '(Hello, %s. Previously selected time was: %s.)' % (enter_name, selected_time);
+        	sqlitedb.setTime(selected_time)
         # TODO: save the selected time as the current time in the database
 
         # Here, we assign `update_message' to `message', which means

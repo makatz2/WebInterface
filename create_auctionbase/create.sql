@@ -53,3 +53,6 @@ CREATE TABLE CurrentTime (
 SELECT Time FROM CurrentTime;
 
 INSERT into CurrentTime values ('2001-12-20 00:00:01');
+
+UPDATE CurrentTime
+SET Time = newTime
