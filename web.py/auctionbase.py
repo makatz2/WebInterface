@@ -52,10 +52,19 @@ def render_template(template_name, **context):
 
 urls = ('/currtime', 'curr_time',
         '/selecttime', 'select_time',
+        '/addbid', 'add_bid',
+        '/search', 'search_func'
         # TODO: add additional URLs here
         # first parameter => URL, second parameter => class name
         )
-
+class search_func:
+    def GET(self):
+        return render_template('search.html')
+class add_bid:
+    def GET(self):
+        return render_template('add_bid.html')
+    def POST(self):
+        return render_template('add_bid.html')
 class curr_time:
     # A simple GET request, to '/currtime'
     #
