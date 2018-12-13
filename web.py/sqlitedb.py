@@ -74,6 +74,7 @@ def search(item_ID, user_ID, Category, min_price, max_price, status):
 	currTime = getTime();
 	allVars.update({'currentTime': currTime});
 	if status != 'all':
+		print 'here1'
 		if first:
 			query_string += ' WHERE'
 			first = None
@@ -106,9 +107,9 @@ def setTime(user_time):
 # Note: if the `result' list is empty (i.e. there are no items for a
 # a given ID), this will throw an Exception!
 
-def addBid(price, item_ID, userID):
+def addBid(Price, item_ID, user_ID):
     currTime = getTime();
-    query_string = 'INSERT INTO Bids(ItemID, UserID, Amount, Time) VALUES(itemID, userID, price, time)'
+    query_string = 'INSERT INTO Bids (ItemID, UserID, Amount, Time) VALUES ($itemID, $userID, $price, $time)'
     result = query(query_string, {'itemID': item_ID, 'userID': user_ID, 'price': Price, 'time': currTime})
 
 def getItemById(item_id):

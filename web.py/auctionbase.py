@@ -82,18 +82,18 @@ class search_func:
 class add_bid:
     def GET(self):
         return render_template('add_bid.html')
-
     def POST(self):
-        return render_template('add_bid.html')
         post_params = web.input()
-	userID = post_params['userID']      
+        userID = post_params['userID']      
         itemID = post_params['itemID']
         price = post_params['price']
+        print 'here'
         update_message = '(Hi %s, your bid of %s on item %s was successful!)' % (userID, itemID, price)
-        try:
-            sqlitedb.addBid(userID, itemID, price)
-        except sqlite3.Error as e:
-            update_message = '(A database error occured: %s)' % (e.message)
+        sqlitedb.addBid(userID, itemID, price)
+        # try:
+        #     sqlitedb.addBid(userID, itemID, price)
+        # except sqlite3.Error as e:
+        #     update_message = '(A database error occured: %s)' % (e.message)
         return render_template('add_bid.html', message = update_message)
 
 class curr_time:
