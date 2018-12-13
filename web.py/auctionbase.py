@@ -53,17 +53,29 @@ def render_template(template_name, **context):
 urls = ('/currtime', 'curr_time',
         '/selecttime', 'select_time',
         '/addbid', 'add_bid',
-        '/search', 'search_func'
+        '/search', 'search_func',
+        '/viewitem', 'item_view'
         # TODO: add additional URLs here
         # first parameter => URL, second parameter => class name
         )
+
+class item_view:
+    def GET(self):
+        return render_template('item_view.html')
+    def POST(self):
+
+
+
+        return render_template('item_view.html')
 class search_func:
     def GET(self):
         return render_template('search.html')
     def POST(self):
         post_params = web.input()
-        results = sqlitedb.search(post_params['itemID'], post_params['userID'], post_params['category'], 
-            post_params['minPrice'],post_params['maxPrice'], post_params['status'])
+        results = sqlitedb.search(post_params['itemID'], 
+            post_params['userID'], post_params['category'], 
+            post_params['minPrice'],post_params['maxPrice'], 
+            post_params['status'])
         return render_template('search.html', search_result = results)
 
 

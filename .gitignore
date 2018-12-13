@@ -1,3 +1,5 @@
 **/AuctionBase
 *.pyc
 /*.dat
+create_auctionbase/bids.dat
+create_auctionbase/bids.dat
