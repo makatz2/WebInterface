@@ -14,6 +14,7 @@ def enforceForeignKey():
 # initiates a transaction on the database
 def transaction():
     return db.transaction()
+
 # Sample usage (in auctionbase.py):
 #
 # t = sqlitedb.transaction()
@@ -27,7 +28,67 @@ def transaction():
 #     t.commit()
 #
 # check out http://webpy.org/cookbook/transactions for examples
+def search(item_ID, user_ID, Category, min_price, max_price, status):
+	first = True
 
+	allVars = {}
+	
+	if Category:
+		allVars.update({'category': Category});
+		query_string = 'SELECT * FROM Items I JOIN Categories C WHERE C.ItemID = I.ItemID AND C.Category = category';
+		first = None
+	else:
+		query_string = 'select * from Items I'
+	if item_ID:
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+		allVars.update({'itemID': item_ID});
+		query_string += ' I.ItemID = $itemID';
+	if user_ID:
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+		allVars.update({'userID': user_ID});
+		query_string += ' I.Seller_UserID = $userID';
+	if min_price:
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+		allVars.update({'minPrice': min_price});
+		query_string += ' I.Currently > $minPrice';
+	if max_price:
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+		allVars.update({'maxPrice': max_price});
+		query_string += ' I.Currently = $maxPrice';
+	currTime = getTime();
+	allVars.update({'currentTime': currTime});
+	if status != 'all':
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+	if status == 'close':
+		query_string += ' I.Ends < $currentTime';
+	elif status == 'open':
+		query_string += ' I.Ends > $currentTime AND I.Started < $currentTime';
+	elif status == 'notStarted':
+		query_string += ' I.Started > $currentTime';
+
+	results = query(query_string, allVars)
+	return results
+#if(item_ID != null)
 # returns the current time from your database
 def getTime():
     # DONE_TODO: update the query string to match
@@ -53,7 +114,7 @@ def addBid(price, item_ID, userID):
 def getItemById(item_id):
     # DONE_TODO: rewrite this method to catch the Exception in case `result' is empty
     try:
-        query_string = 'select * from Items where item_ID = $itemID'
+        query_string = 'select * from Items where Item_ID = $itemID'
         result = query(query_string, {'itemID': item_id})
     except Exception as e:
         t.rollback()

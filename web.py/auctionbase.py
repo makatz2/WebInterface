@@ -61,6 +61,12 @@ class search_func:
     def GET(self):
         return render_template('search.html')
 
+    def POST(self):
+        post_params = web.input()
+        results = sqlitedb.search(post_params['itemID'], post_params['userID'], post_params['category'], 
+            post_params['minPrice'],post_params['maxPrice'], post_params['status'])
+        return render_template('search.html', search_result = results)
+
 class add_bid:
     def GET(self):
         return render_template('add_bid.html')
@@ -99,7 +105,6 @@ class select_time:
     # and GET requests
     def POST(self):
         post_params = web.input()
-        curr = sqlitedb.getTime()
         MM = post_params['MM']
         dd = post_params['dd']
         yyyy = post_params['yyyy']
@@ -110,9 +115,8 @@ class select_time:
 
 
         selected_time = '%s-%s-%s %s:%s:%s' % (yyyy, MM, dd, HH, mm, ss)
-        if(curr > selected_time):
-        	update_message = '(Hello, %s. Previously selected time was: %s.)' % (enter_name, selected_time);
-        	sqlitedb.setTime(selected_time)
+        update_message = '(Hello, %s. Previously selected time was: %s.)' % (enter_name, selected_time);
+        sqlitedb.setTime(selected_time)
         # TODO: save the selected time as the current time in the database
 
         # Here, we assign `update_message' to `message', which means
