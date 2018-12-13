@@ -98,12 +98,19 @@ def getTime():
     # alternatively: return results[0]['currenttime']
     return results[0]['Time'] # DONE_TODO: update this as well to match the
                                   # column name
+
 # updates the currentTime based on user provided value
 def setTime(user_time):
 	db.update('CurrentTime', where='Time = $userTime', Time='$userTime', vars={'userTime': user_time})
 # returns a single item specified by the Item's ID in the database
 # Note: if the `result' list is empty (i.e. there are no items for a
 # a given ID), this will throw an Exception!
+
+def addBid(price, item_ID, userID):
+    currTime = getTime();
+    query_string = 'INSERT INTO Bids(ItemID, UserID, Amount, Time) VALUES(itemID, userID, price, time)'
+    result = query(query_string, {'itemID': item_ID, 'userID': user_ID, 'price': Price, 'time': currTime})
+
 def getItemById(item_id):
     # DONE_TODO: rewrite this method to catch the Exception in case `result' is empty
     try:

@@ -70,6 +70,7 @@ class item_view:
 class search_func:
     def GET(self):
         return render_template('search.html')
+
     def POST(self):
         post_params = web.input()
         results = sqlitedb.search(post_params['itemID'], 
@@ -78,12 +79,23 @@ class search_func:
             post_params['status'])
         return render_template('search.html', search_result = results)
 
-
 class add_bid:
     def GET(self):
         return render_template('add_bid.html')
+
     def POST(self):
         return render_template('add_bid.html')
+        post_params = web.input()
+	userID = post_params['userID']      
+        itemID = post_params['itemID']
+        price = post_params['price']
+        update_message = '(Hi %s, your bid of %s on item %s was successful!)' % (userID, itemID, price)
+        try:
+            sqlitedb.addBid(userID, itemID, price)
+        except sqlite3.Error as e:
+            update_message = '(A database error occured: %s)' % (e.message)
+        return render_template('add_bid.html', message = update_message)
+
 class curr_time:
     # A simple GET request, to '/currtime'
     #
