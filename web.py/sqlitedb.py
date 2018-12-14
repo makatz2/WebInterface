@@ -102,7 +102,15 @@ def getTime():
 
 # updates the currentTime based on user provided value
 def setTime(user_time):
-	db.update('CurrentTime', where='Time = $userTime', Time='$userTime', vars={'userTime': user_time})
+	# query_string = 'UPDATE CurrentTime SET Time = $userTime'
+	# query(query_string, {'userTime': user_time})
+	t = transaction();
+	try:
+		db.update('CurrentTime', where='1=1', Time='$userTime', vars={'userTime': user_time})
+	except Exception as e:
+		t.rollback()
+		print str(e)
+
 # returns a single item specified by the Item's ID in the database
 # Note: if the `result' list is empty (i.e. there are no items for a
 # a given ID), this will throw an Exception!

@@ -54,14 +54,14 @@ urls = ('/currtime', 'curr_time',
         '/selecttime', 'select_time',
         '/addbid', 'add_bid',
         '/search', 'search_func',
-        '/viewitem', 'item_view'
+        '/itemPage', 'item_page'
         # TODO: add additional URLs here
         # first parameter => URL, second parameter => class name
         )
 
-class item_view:
+class item_page:
     def GET(self):
-        return render_template('item_view.html')
+        return render_template('item_page.html')
     def POST(self):
 
 
