@@ -116,9 +116,14 @@ def setTime(user_time):
 # a given ID), this will throw an Exception!
 
 def addBid(Price, item_ID, user_ID):
-    currTime = getTime();
-    query_string = 'INSERT INTO Bids (ItemID, UserID, Amount, Time) VALUES ($itemID, $userID, $price, $time)'
-    result = query(query_string, {'itemID': item_ID, 'userID': user_ID, 'price': Price, 'time': currTime})
+    t = db.transaction()
+    try: db.insert('Bids', ItemID = item_ID, UserID = user_ID, Amount = Price, Time = getTime())
+    except Exception as e:
+        t.rollback()
+        return False
+    else:
+        t.commit()
+        return True
 
 def getItemById(item_id):
     # DONE_TODO: rewrite this method to catch the Exception in case `result' is empty
