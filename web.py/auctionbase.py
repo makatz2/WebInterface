@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# Authors:
+# Name: Michael Katz, ID: 9070102042
+# Name: Emmet Ryan, ID: 9069927185
+# Name: Kshitij Kumar, ID: 9079574746
+
 import sys; sys.path.insert(0, 'lib') # this line is necessary for the rest
 import os                             # of the imports to work!
 
@@ -64,8 +69,8 @@ class item_page:
         itemDetails = sqlitedb.getItemById(itemID)
         bids = sqlitedb.getItemBids(itemID)
         categories = sqlitedb.getItemCats(itemID)
-        # TODO: if there is a winner, add display on the item page.
-        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories)
+        winner = sqlitedb.getItemWinner(itemID)
+        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner)
 
 
 

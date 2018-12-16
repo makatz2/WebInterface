@@ -1,3 +1,7 @@
+# Authors:
+# Name: Michael Katz, ID: 9070102042
+# Name: Emmet Ryan, ID: 9069927185
+# Name: Kshitij Kumar, ID: 9079574746
 import web
 
 db = web.database(dbn='sqlite',
@@ -143,7 +147,13 @@ def getItemCats(item_id):
     query_string = 'select * from Categories where ItemID = $itemID'
     result = query(query_string, {'itemID': item_id})
     return result
-    
+
+def getItemWinner(item_id):
+	cTime = getTime()
+	query_string = 'select UserID from Bids B, Items I WHERE B.ItemID = $itemID AND (SELECT Time FROM CurrentTime) >= I.Ends Order by Time desc LIMIT 1;'
+	result = query(query_string, {'itemID': item_id})
+	return result	    
+
 # wrapper method around web.py's db.query method
 # check out http://webpy.org/cookbook/query for more info
 def query(query_string, vars = {}):
