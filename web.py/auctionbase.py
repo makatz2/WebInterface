@@ -78,8 +78,8 @@ class search_func:
         post_params = web.input()
         results = sqlitedb.search(post_params['itemID'], 
             post_params['userID'], post_params['category'], 
-            post_params['minPrice'],post_params['maxPrice'], 
-            post_params['status'])
+            post_params['description'], post_params['minPrice'],
+            post_params['maxPrice'], post_params['status'])
         return render_template('search.html', search_result = results)
 
 class add_bid:

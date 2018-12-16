@@ -28,7 +28,7 @@ def transaction():
 #     t.commit()
 #
 # check out http://webpy.org/cookbook/transactions for examples
-def search(item_ID, user_ID, Category, min_price, max_price, status):
+def search(item_ID, user_ID, Category, description, min_price, max_price, status):
 	first = True
 
 	allVars = {}
@@ -55,6 +55,14 @@ def search(item_ID, user_ID, Category, min_price, max_price, status):
 			query_string += ' AND'
 		allVars.update({'userID': user_ID});
 		query_string += ' I.Seller_UserID = $userID';
+	if description:
+		if first:
+			query_string += ' WHERE'
+			first = None
+		else:
+			query_string += ' AND'
+		allVars.update({'Description': '%' + description + '%'})
+		query_string += ' I.Description LIKE $Description';
 	if min_price:
 		if first:
 			query_string += ' WHERE'
@@ -74,7 +82,6 @@ def search(item_ID, user_ID, Category, min_price, max_price, status):
 	currTime = getTime();
 	allVars.update({'currentTime': currTime});
 	if status != 'all':
-		print 'here1'
 		if first:
 			query_string += ' WHERE'
 			first = None
