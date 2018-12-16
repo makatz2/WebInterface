@@ -55,14 +55,17 @@ urls = ('/currtime', 'curr_time',
         '/addbid', 'add_bid',
         '/search', 'search_func',
         '/itemPage', 'item_page'
-        # TODO: add additional URLs here
         # first parameter => URL, second parameter => class name
         )
 
 class item_page:
     def GET(self):
-        return render_template('item_page.html')
-    def POST(self):
+        itemID = web.input().id
+        itemDetails = sqlitedb.getItemById(itemID)
+        bids = sqlitedb.getItemBids(itemID)
+        categories = sqlitedb.getItemCats(itemID)
+        # TODO: if there is a winner, add display on the item page.
+        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories)
 
 
 
@@ -83,17 +86,29 @@ class add_bid:
     def GET(self):
         return render_template('add_bid.html')
     def POST(self):
-        post_params = web.input()
-        userID = post_params['userID']      
-        itemID = post_params['itemID']
-        price = post_params['price']
-        print 'here'
-        update_message = '(Hi %s, your bid of %s on item %s was successful!)' % (userID, itemID, price)
-        sqlitedb.addBid(userID, itemID, price)
-        # try:
-        #     sqlitedb.addBid(userID, itemID, price)
-        # except sqlite3.Error as e:
-        #     update_message = '(A database error occured: %s)' % (e.message)
+        try:
+            post_params = web.input()
+            userID = post_params['userID']      
+            itemID = post_params['itemID']
+            price = post_params['price']
+            currTime = sqlitedb.getTime();
+
+            item = sqlitedb.getItemById(itemID);
+            itemPrice = item['Currently']
+            itemEndTime = item['Ends']
+            ItemStartTime = item['Started']
+            buyPrice = item['Buy_Price']
+            if price <= itemPrice:
+                update_message ='(Hi %s, your bid of %s on item %s was unsuccessful because the current bid was higher than your bid.)' % (userID, itemID, price)
+            elif currTime > itemEndTime or buyPrice <= itemPrice:
+                update_message ='(Hi %s, your bid of %s on item %s was unsuccessful because the auction for this item has ended.)' % (userID, itemID, price)
+            elif currTime < itemStartTime:
+                update_message ='(Hi %s, your bid of %s on item %s was unsuccessful because the auction for this item has not started yet.)' % (userID, itemID, price)
+            else:
+                sqlitedb.addBid(userID, itemID, price)
+                update_message = '(Hi %s, your bid of %s on item %s was successful!)' % (userID, itemID, price)
+        except Exception as e:
+            update_message = '(A database error occured: %s)' % (e.message)
         return render_template('add_bid.html', message = update_message)
 
 class curr_time:
@@ -128,8 +143,7 @@ class select_time:
 
         selected_time = '%s-%s-%s %s:%s:%s' % (yyyy, MM, dd, HH, mm, ss)
         update_message = '(Hello, %s. Previously selected time was: %s.)' % (enter_name, selected_time);
-        sqlitedb.setTime(selected_time)
-        # TODO: save the selected time as the current time in the database
+        sqlitedb.setTime(string_to_time(selected_time))
 
         # Here, we assign `update_message' to `message', which means
         # we'll refer to it in our template as `message'
@@ -144,3 +158,4 @@ if __name__ == '__main__':
     app = web.application(urls, globals())
     app.add_processor(web.loadhook(sqlitedb.enforceForeignKey))
     app.run()
+

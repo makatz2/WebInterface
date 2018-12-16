@@ -102,14 +102,8 @@ def getTime():
 
 # updates the currentTime based on user provided value
 def setTime(user_time):
-	# query_string = 'UPDATE CurrentTime SET Time = $userTime'
-	# query(query_string, {'userTime': user_time})
-	t = transaction();
-	try:
-		db.update('CurrentTime', where='1=1', Time='$userTime', vars={'userTime': user_time})
-	except Exception as e:
-		t.rollback()
-		print str(e)
+	db.update('CurrentTime', where = "1 == 1", Time = user_time)
+	return
 
 # returns a single item specified by the Item's ID in the database
 # Note: if the `result' list is empty (i.e. there are no items for a
@@ -117,7 +111,8 @@ def setTime(user_time):
 
 def addBid(Price, item_ID, user_ID):
     t = db.transaction()
-    try: db.insert('Bids', ItemID = item_ID, UserID = user_ID, Amount = Price, Time = getTime())
+    try: 
+    	db.insert('Bids', ItemID = item_ID, UserID = user_ID, Amount = Price, Time = getTime())
     except Exception as e:
         t.rollback()
         return False
@@ -126,15 +121,22 @@ def addBid(Price, item_ID, user_ID):
         return True
 
 def getItemById(item_id):
-    # DONE_TODO: rewrite this method to catch the Exception in case `result' is empty
-    try:
-        query_string = 'select * from Items where Item_ID = $itemID'
-        result = query(query_string, {'itemID': item_id})
-    except Exception as e:
-        t.rollback()
-        print str(e)
+    # TODO: rewrite this method to catch the Exception in case `result' is empty
+    query_string = 'select * from Items where ItemID = $itemID'
+    result = query(query_string, {'itemID': item_id})
     return result[0]
 
+def getItemBids(item_id):
+    query_string = 'select * from Bids where ItemID = $itemID Order By Time desc'
+    result = query(query_string, {'itemID': item_id})
+    return result
+
+
+def getItemCats(item_id):
+    query_string = 'select * from Categories where ItemID = $itemID'
+    result = query(query_string, {'itemID': item_id})
+    return result
+    
 # wrapper method around web.py's db.query method
 # check out http://webpy.org/cookbook/query for more info
 def query(query_string, vars = {}):
