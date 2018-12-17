@@ -154,6 +154,11 @@ def getItemWinner(item_id):
 	result = query(query_string, {'itemID': item_id})
 	return result	    
 
+def getItemStatus(item_id):
+	query_string = 'select COUNT(*) from Items I WHERE I.ItemID = $itemID AND (SELECT Time from CurrentTime) >= I.Ends'
+	result = query(query_string, {'itemID': item_id})
+	return result
+
 # wrapper method around web.py's db.query method
 # check out http://webpy.org/cookbook/query for more info
 def query(query_string, vars = {}):

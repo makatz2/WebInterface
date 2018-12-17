@@ -70,7 +70,12 @@ class item_page:
         bids = sqlitedb.getItemBids(itemID)
         categories = sqlitedb.getItemCats(itemID)
         winner = sqlitedb.getItemWinner(itemID)
-        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner)
+        bStatus = sqlitedb.getItemStatus(itemID)
+#        if bStatus != 0:
+#            bStatus = "Open"
+#        else:
+#            bStatus = "Closed"
+        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner, item_status = bStatus)
 
 
 
