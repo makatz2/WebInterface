@@ -65,13 +65,17 @@ urls = ('/currtime', 'curr_time',
 
 class item_page:
     def GET(self):
-        itemID = web.input().id
-        itemDetails = sqlitedb.getItemById(itemID)
-        bids = sqlitedb.getItemBids(itemID)
-        categories = sqlitedb.getItemCats(itemID)
-        winner = sqlitedb.getItemWinner(itemID)
+        try:
+            winner = False
+            itemID = web.input().id
+            itemDetails = sqlitedb.getItemById(itemID)
+            bids = sqlitedb.getItemBids(itemID)
+            categories = sqlitedb.getItemCats(itemID)
+            if(string_to_time(itemDetails['Ends']) <= string_to_time(sqlitedb.getTime()) or itemDetails['Currently'] >= itemDetails['Buy_Price']):
+                winner = bids[0]['UserID']
+        except Exception as e:
+            update_message = '(A database error occured: %s)' % (e.message)
         return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner)
-
 
 
         return render_template('item_view.html')
@@ -96,12 +100,12 @@ class add_bid:
             userID = post_params['userID']      
             itemID = post_params['itemID']
             price = post_params['price']
-            currTime = sqlitedb.getTime();
+            currTime = string_to_time(sqlitedb.getTime());
 
             item = sqlitedb.getItemById(itemID);
             itemPrice = item['Currently']
-            itemEndTime = item['Ends']
-            ItemStartTime = item['Started']
+            itemEndTime = string_to_time(item['Ends'])
+            ItemStartTime = string_to_time(item['Started'])
             buyPrice = item['Buy_Price']
             if price <= itemPrice:
                 update_message ='(Hi %s, your bid of %s on item %s was unsuccessful because the current bid was higher than your bid.)' % (userID, itemID, price)
