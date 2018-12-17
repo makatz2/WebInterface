@@ -71,16 +71,11 @@ class item_page:
             itemDetails = sqlitedb.getItemById(itemID)
             bids = sqlitedb.getItemBids(itemID)
             categories = sqlitedb.getItemCats(itemID)
-            bStatus = sqlitedb.getItemStatus(itemID)
-            if bStatus == "[<Storage {'COUNT(*)': 0}>]":
-                bStatus = "Open"
-            else:
-                bStatus = "Closed"
             if(string_to_time(itemDetails['Ends']) <= string_to_time(sqlitedb.getTime()) or itemDetails['Currently'] >= itemDetails['Buy_Price']):
                 winner = bids[0]['UserID']
         except Exception as e:
             update_message = '(A database error occured: %s)' % (e.message)
-        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner, item_status = bStatus)
+        return render_template('item_page.html',item_id=itemID, item_details=itemDetails, item_bids = bids, item_cats = categories, item_winner = winner)
 
 
         return render_template('item_view.html')
