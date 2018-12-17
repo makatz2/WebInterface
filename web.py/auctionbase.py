@@ -72,10 +72,10 @@ class item_page:
             bids = sqlitedb.getItemBids(itemID)
             categories = sqlitedb.getItemCats(itemID)
             bStatus = sqlitedb.getItemStatus(itemID)
-#           if bStatus != 0:
-#               bStatus = "Open"
-#           else:
-#               bStatus = "Closed"
+            if bStatus == "[<Storage {'COUNT(*)': 0}>]":
+                bStatus = "Open"
+            else:
+                bStatus = "Closed"
             if(string_to_time(itemDetails['Ends']) <= string_to_time(sqlitedb.getTime()) or itemDetails['Currently'] >= itemDetails['Buy_Price']):
                 winner = bids[0]['UserID']
         except Exception as e:
